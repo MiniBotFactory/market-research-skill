@@ -1,6 +1,6 @@
 # market-research-skill
 
-> 🔬 一个面向 AI 代理的市场调研专业工作流 Skill，适用于任何支持 Skill 格式的 AI 编程工具（Claude Code、Opencode、oh-my-opencode 等）。
+> 🔬 一个面向 AI 代理的市场调研专业工作流 Skill，适用于 Claude Code、Opencode 等支持 Skill 格式的 AI 编程工具。Skill 结构学习自 [oh-my-opencode](https://github.com/oh-my-opencode)。
 
 ---
 
@@ -65,7 +65,7 @@
 
 ## 安装方式
 
-### Claude Code / Opencode / oh-my-opencode（推荐）
+### Claude Code / Opencode（推荐）
 
 ```bash
 # 克隆仓库
@@ -78,7 +78,6 @@ cp -r market-research-skill ~/.claude/skills/market-research
 > **平台对应目录**：
 > - **Claude Code**：`~/.claude/skills/`
 > - **Opencode**：`~/.opencode/skills/`
-> - **oh-my-opencode**：`~/.claude/skills/`
 
 ### 手动加载（任意平台）
 
