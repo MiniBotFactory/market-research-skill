@@ -1,6 +1,6 @@
 # market-research-skill
 
-> 🔬 一个面向 AI 代理的市场调研专业工作流 Skill，架构灵感来自 [oh-my-opencode](https://github.com/oh-my-opencode) 的多代理协作系统。
+> 🔬 一个面向 AI 代理的市场调研专业工作流 Skill，适用于任何支持 Skill 格式的 AI 编程工具（Claude Code、Opencode、oh-my-opencode 等）。
 
 ---
 
@@ -37,9 +37,9 @@
                                   [交付客户]
 ```
 
-| AI 角色 | 职责 | 灵感来源 |
+| AI 角色 | 职责 | 对应原型 |
 |---------|------|----------|
-| 项目经理 | 需求接收、任务协调、交付管理 | Sisyphus (oh-my-opencode) |
+| 项目经理 | 需求接收、任务协调、交付管理 | Sisyphus |
 | 需求分析师 | 需求澄清、隐性目标识别 | Metis |
 | 数据研究员 | 内部数据检索整理 | explore |
 | 市场情报员 | 外部数据采集、竞品信息 | librarian |
@@ -56,25 +56,33 @@
 | 市场规模评估（TAM/SAM/SOM） | ✅ |
 | 用户研究（访谈指南、问卷设计、用户画像） | ✅ |
 | 行业趋势分析（PESTEL、趋势优先级） | ✅ |
+| 定价研究（Van Westendorp、Gabor-Granger） | ✅ |
+| Jobs-to-be-Done 分析 | ✅ |
+| 客户旅程地图 | ✅ |
+| 客户细分（RFM、B2B价值矩阵） | ✅ |
 
 ---
 
 ## 安装方式
 
-### 方式一：直接下载（推荐）
+### Claude Code / Opencode / oh-my-opencode（推荐）
 
 ```bash
 # 克隆仓库
-git clone https://github.com/[your-username]/market-research-skill.git
+git clone https://github.com/MiniBotFactory/market-research-skill.git
 
-# 复制到 oh-my-opencode skills 目录
+# 复制到 skills 目录（~/.claude/skills/ 或平台对应目录）
 cp -r market-research-skill ~/.claude/skills/market-research
 ```
 
-### 方式二：手动安装
+> **平台对应目录**：
+> - **Claude Code**：`~/.claude/skills/`
+> - **Opencode**：`~/.opencode/skills/`
+> - **oh-my-opencode**：`~/.claude/skills/`
 
-1. 下载 [Releases](../../releases) 中的最新 `.skill` 文件
-2. 在 oh-my-opencode 中使用 `/skill install market-research.skill`
+### 手动加载（任意平台）
+
+直接将 `SKILL.md` 的内容粘贴到你的 System Prompt 或角色定义中，按需引用 `references/` 目录下的文件即可使用。
 
 ---
 
@@ -87,6 +95,9 @@ cp -r market-research-skill ~/.claude/skills/market-research
 - "我需要做用户研究"
 - "分析一下行业趋势"
 - "做市场调研报告"
+- "研究一下定价策略"
+- "画一张客户旅程地图"
+- "做客户细分分析"
 
 ### 快速示例
 
@@ -126,16 +137,25 @@ market-research-skill/
 │   │   ├── user-research-workflow.md
 │   │   └── industry-trend-workflow.md
 │   │
-│   └── methods/                          # 方法论工具箱
+│   └── methods/                          # 方法论工具箱（8个）
 │       ├── competitor-analysis.md        # SWOT、波特五力、竞品矩阵
 │       ├── market-sizing.md              # TAM/SAM/SOM 计算方法
 │       ├── user-research.md              # 访谈、问卷、用户画像
-│       └── data-sources.md               # 公开数据源清单
+│       ├── data-sources.md               # 公开数据源清单（中国+全球）
+│       ├── pricing-research.md           # 定价研究（PSM、Gabor-Granger）
+│       ├── jobs-to-be-done.md            # JTBD框架、切换访谈、Job Map
+│       ├── customer-journey.md           # 5阶段旅程、情绪曲线、接触点
+│       └── segmentation.md              # RFM、B2B价值矩阵、行为聚类
 │
 └── assets/
-    └── report-templates/                 # 可直接使用的报告模板
+    └── report-templates/                 # 报告模板（7个）
+        ├── executive-summary.md          # 执行摘要（单页版，≤500字）
         ├── standard-report.md            # 标准市场调研报告
-        └── requirements-doc.md           # 需求澄清文档
+        ├── requirements-doc.md           # 需求澄清文档
+        ├── competitor-analysis-report.md # 竞品分析专项报告
+        ├── market-sizing-report.md       # 市场规模评估报告
+        ├── user-research-report.md       # 用户研究报告
+        └── investor-bp-market.md         # 投资人BP市场章节
 ```
 
 ---
@@ -158,14 +178,15 @@ market-research-skill/
 3. **角色分离**：数据收集→分析→审核有清晰边界
 4. **质量门禁**：质量审核员有权打回，最多 2 次循环
 
-### 与 oh-my-opencode 的对应关系
+### Skill 结构说明
 
-如果你熟悉 oh-my-opencode 的架构，本 Skill 是其多代理模式在**市场调研领域**的具体应用：
+本 Skill 遵循标准的三层 Progressive Disclosure 设计：
 
-- `SKILL.md` = 系统提示词（System Prompt）中的角色定义
-- `references/roles/*.md` = 子代理的角色 Prompt（通过 `task()` 委托时传入）
-- `references/workflows/*.md` = 任务分解的 Behavior Instructions
-- `references/methods/*.md` = 类似 librarian 的专业知识库
+- `SKILL.md` — 触发条件 + 工作流总览（AI 加载 Skill 时首先读取）
+- `references/roles/*.md` — 每个角色的详细 Prompt（按需加载，可直接传入子代理）
+- `references/methods/*.md` — 方法论知识库（执行对应调研类型时按需加载）
+
+这种设计使 Skill 在任何支持文件引用的 AI 平台上都能有效工作。
 
 ---
 
@@ -173,7 +194,7 @@ market-research-skill/
 
 欢迎以下类型的贡献：
 
-- 🔧 **新工作流**：添加新的调研类型（如竞争情报监测、定价研究）
+- 🔧 **新工作流**：添加新的调研类型（如竞争情报监测）
 - 📚 **数据源更新**：更新或添加新的公开数据源
 - 🌍 **多语言支持**：英文版、其他语言版
 - 🐛 **问题反馈**：在 Issues 中报告实际使用中发现的问题
@@ -181,9 +202,9 @@ market-research-skill/
 ### 如何贡献
 
 1. Fork 本仓库
-2. 创建特性分支：`git checkout -b feature/add-pricing-research`
-3. 提交变更：`git commit -m 'Add pricing research workflow'`
-4. 推送分支：`git push origin feature/add-pricing-research`
+2. 创建特性分支：`git checkout -b feature/add-new-workflow`
+3. 提交变更：`git commit -m 'Add: new workflow'`
+4. 推送分支：`git push origin feature/add-new-workflow`
 5. 创建 Pull Request
 
 ---
@@ -197,7 +218,8 @@ MIT License — 详见 [LICENSE](LICENSE) 文件。
 ## 致谢
 
 - [oh-my-opencode](https://github.com/oh-my-opencode) — 多代理 Skill 架构的灵感来源
-- [skill-creator](https://github.com/oh-my-opencode/skills/skill-creator) — Skill 开发最佳实践指南
+- [Opencode](https://github.com/opencode) — AI 编程工具
+- [Claude Code](https://claude.ai/code) — Anthropic 官方 CLI
 
 ---
 
